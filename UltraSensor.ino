@@ -1,8 +1,8 @@
 #include <Servo.h>
 
 // Define the pins for the HC-SR04 sensor
-const int trigPin = 9;
-const int echoPin = 10;
+const int trigPin = 5;
+const int echoPin = 6;
 
 // Define variables for duration and distance
 long duration;
