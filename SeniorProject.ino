@@ -9,6 +9,7 @@
 // PIN 9 = Left/Right Panels
 // PIN 10 = Top Panel
 // PIN 11 = Trapdoor
+// PIN 13 = Buzzer
 
 // Define servo motor objects
 Servo servo1;
@@ -18,6 +19,7 @@ Servo servo3;
 // Define the pins for the HC-SR04 sensor
 const int trigPin = 5;
 const int echoPin = 6;
+const int buzzerPin = 13;
 
 // Define variables for duration and distance
 long duration;
@@ -31,6 +33,7 @@ void setup() {
   // Set the pin modes for the ultrasonic sensor
   pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
+  pinMode(buzzerPin, OUTPUT);
 
   // Attach servos and set initial positions
   servo1.attach(9);
@@ -69,8 +72,13 @@ void loop() {
     if (distance < 5 && !triggered) {
       triggered = true;  // Block further sequences until reset
 
-      // Wait for 3 seconds before starting the servo sequence
-      delay(3000);
+      // Wait for 2 seconds upon detection of shirt
+      delay(2000);
+
+      // Buzzer countdown of 3 seconds
+      buzzerCountdown();
+
+      delay(500);
 
       // Execute the servo sequence
       executeServoSequence();
@@ -90,11 +98,11 @@ void loop() {
 
 void executeServoSequence() {
   // Servo1 sequence
-  servo1.write(180);
+  servo1.write(155);
   delay(1500);
   servo1.write(90);
   delay(100);
-  servo1.write(0);
+  servo1.write(25);
   delay(2400);
   servo1.write(90);
   delay(1000);
@@ -113,4 +121,20 @@ void executeServoSequence() {
   delay(500);
   servo3.write(180);
   delay(700);
+}
+
+// Function to countdown with the buzzer for 4 seconds
+void buzzerCountdown() {
+  for (int i = 0; i < 2; i++) {    // Play 600 Hz tone for the first two intervals
+    tone(buzzerPin, 600);          // Play 600 Hz tone
+    delay(500);                    // Wait for 500ms (tone on)
+    noTone(buzzerPin);             // Stop tone
+    delay(500);                    // Wait for 500ms (tone off)
+  }
+
+  // Play 1000 Hz tone for the third and final interval
+  tone(buzzerPin, 800);           // Play 1000 Hz tone
+  delay(500);                      // Wait for 500ms (tone on)
+  noTone(buzzerPin);               // Stop tone
+  delay(500);                      // Wait for 500ms (tone off)
 }
