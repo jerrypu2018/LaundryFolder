@@ -98,11 +98,11 @@ void loop() {
 
 void executeServoSequence() {
   // Servo1 sequence
-  servo1.write(155);
+  servo1.write(165);
   delay(1500);
   servo1.write(90);
   delay(100);
-  servo1.write(25);
+  servo1.write(15);
   delay(2400);
   servo1.write(90);
   delay(1000);
