@@ -11,12 +11,12 @@
 // PIN 11 = Trapdoor
 // PIN 13 = Buzzer
 
-// Define servo motor objects
+// Define servo motors
 Servo servo1;
 Servo servo2;
 Servo servo3;
 
-// Define the pins for the HC-SR04 sensor
+// Define the pins for ultrasonic sensor and passive buzzer
 const int trigPin = 5;
 const int echoPin = 6;
 const int buzzerPin = 13;
@@ -45,30 +45,30 @@ void setup() {
   servo3.attach(11);
   servo3.write(180);
 
-  delay(100);  // Small delay to stabilize at power-on
+  delay(100);
 }
 
 void loop() {
-  // Send a 10us pulse to the HC-SR04 to trigger the sensor
+  // Send a 10us pulse to the ultrasonic sensor to trigger loop
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
   digitalWrite(trigPin, HIGH);
   delayMicroseconds(10);
   digitalWrite(trigPin, LOW);
 
-  // Read the echoPin, which returns the sound wave travel time in microseconds
+  // Read the echoPin, in microseconds
   duration = pulseIn(echoPin, HIGH);
 
   // Calculate the distance in centimeters (speed of sound is 343 m/s)
   distance = duration * 0.034 / 2;
 
-  // Ensure the sensor does not trigger the sequence on power-up
+  // Check for first run so no false triggers
   if (firstRun) {
-    if (distance >= 5) {  // Ignore anything greater than the detection threshold
+    if (distance >= 5) {  // Ignore anything greater than 5cm
       firstRun = false;
     }
   } else {
-    // Trigger the sequence only if an object is within 5 cm and not already triggered
+    // Only trigger if within 5cm and not already triggered
     if (distance < 5 && !triggered) {
       triggered = true;  // Block further sequences until reset
 
@@ -84,7 +84,6 @@ void loop() {
       executeServoSequence();
 
       // Wait 1 second before scanning for the next trigger
-      // MIGHT REMOVE LATER
       delay(1000);
 
       // Reset the triggered flag to allow new triggers
@@ -123,7 +122,7 @@ void executeServoSequence() {
   delay(700);
 }
 
-// Function to countdown with the buzzer for 4 seconds
+// Function to countdown with the buzzer for 3 seconds
 void buzzerCountdown() {
   for (int i = 0; i < 2; i++) {    // Play 600 Hz tone for the first two intervals
     tone(buzzerPin, 600);          // Play 600 Hz tone
